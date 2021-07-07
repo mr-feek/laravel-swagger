@@ -5,6 +5,7 @@ namespace Mtrajano\LaravelSwagger\Tests\Stubs\Controllers;
 use Illuminate\Routing\Controller;
 use Mtrajano\LaravelSwagger\Tests\Stubs\Requests\UserShowRequest;
 use Mtrajano\LaravelSwagger\Tests\Stubs\Requests\UserStoreRequest;
+use Mtrajano\LaravelSwagger\Tests\Stubs\Resources\UserResource;
 
 class UserController extends Controller
 {
@@ -14,9 +15,9 @@ class UserController extends Controller
         return json_encode([['first_name' => 'John'], ['first_name' => 'Jack']]);
     }
 
-    public function show(UserShowRequest $request, $id)
+    public function show(UserShowRequest $request, $id): UserResource
     {
-        return json_encode(['first_name' => 'John']);
+        return new UserResource(['first_name' => 'John']);
     }
 
     /**

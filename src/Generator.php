@@ -4,6 +4,7 @@ namespace Mtrajano\LaravelSwagger;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
+use Mtrajano\LaravelSwagger\Parsers\ResponseParser;
 use phpDocumentor\Reflection\DocBlockFactory;
 use PHPStan\BetterReflection\BetterReflection;
 use ReflectionMethod;
@@ -21,6 +22,10 @@ class Generator
     protected $method;
     protected $docParser;
     protected $hasSecurityDefinitions;
+    /**
+     * @var \Mtrajano\LaravelSwagger\Parsers\ResponseParser
+     */
+    private $responseParser;
 
     public function __construct($config, $routeFilter = null)
     {
@@ -28,6 +33,7 @@ class Generator
         $this->routeFilter = $routeFilter;
         $this->docParser = DocBlockFactory::createInstance();
         $this->hasSecurityDefinitions = false;
+        $this->responseParser = new ResponseParser();
     }
 
     public function generate()
@@ -134,15 +140,17 @@ class Generator
 
         [$isDeprecated, $summary, $description] = $this->parseActionDocBlock($docBlock);
 
+        $responses = $actionInstance ? $this->responseParser->parseResponses($actionInstance) : [
+            '200' => [
+                'description' => 'todo: parse closure responses',
+            ],
+        ];
+
         $this->docs['paths'][$this->route->uri()][$this->method] = [
             'summary' => $summary,
             'description' => $description,
             'deprecated' => $isDeprecated,
-            'responses' => [
-                '200' => [
-                    'description' => 'OK',
-                ],
-            ],
+            'responses' => $responses,
         ];
 
         $this->addActionParameters();
