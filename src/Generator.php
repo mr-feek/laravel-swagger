@@ -5,6 +5,7 @@ namespace Mtrajano\LaravelSwagger;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use phpDocumentor\Reflection\DocBlockFactory;
+use PHPStan\BetterReflection\BetterReflection;
 use ReflectionMethod;
 
 class Generator
@@ -218,7 +219,7 @@ class Generator
         }
     }
 
-    private function getActionClassInstance(): ?ReflectionMethod
+    private function getActionClassInstance(): ?\PHPStan\BetterReflection\Reflection\ReflectionMethod
     {
         [$class, $method] = Str::parseCallback($this->route->action());
 
@@ -226,7 +227,10 @@ class Generator
             return null;
         }
 
-        return new ReflectionMethod($class, $method);
+        return (new BetterReflection())
+            ->classReflector()
+            ->reflect($class)
+            ->getMethod($method);
     }
 
     private function parseActionDocBlock(string $docBlock)

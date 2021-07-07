@@ -38,6 +38,7 @@
         }
     },
     "require": {
-        "phpdocumentor/reflection-docblock": "^4.3|^5.2"
-    }
+        "ondrejmirtes/better-reflection": "dev-master"
+    },
+    "minimum-stability": "dev"
 }
