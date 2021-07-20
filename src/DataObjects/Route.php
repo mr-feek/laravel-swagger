@@ -10,6 +10,8 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Mtrajano\LaravelSwagger\LaravelSwaggerException;
 use phpDocumentor\Reflection;
+use PHPStan\BetterReflection\BetterReflection;
+use PHPStan\BetterReflection\Reflection\Adapter\ReflectionMethod;
 
 class Route
 {
@@ -189,7 +191,7 @@ class Route
      *
      * @throws \ReflectionException
      */
-    private function _getActionClassInstance(): ?\ReflectionMethod
+    private function _getActionClassInstance(): ?\PHPStan\BetterReflection\Reflection\ReflectionMethod
     {
         [$class, $method] = Str::parseCallback($this->getAction());
 
@@ -197,7 +199,7 @@ class Route
             return null;
         }
 
-        return new \ReflectionMethod($class, $method);
+        return (new BetterReflection())->classReflector()->reflect($class)->getMethod($method);
     }
 
     private function _getTagValuesForDocblock(string $docBlock, string $tag): array
