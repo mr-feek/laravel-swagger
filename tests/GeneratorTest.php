@@ -295,6 +295,36 @@ EOD;
         $this->assertEquals('', $paths['/users/details']['get']['summary']);
         $this->assertEquals(true, $paths['/users/details']['get']['deprecated']);
         $this->assertEquals('', $paths['/users/details']['get']['description']);
+
+        return $paths;
+    }
+
+    /**
+     * @depends testRouteData
+     */
+    public function testRouteResponseData(array $paths)
+    {
+        foreach ($paths as $route => $actions) {
+            foreach ($actions as $verb => $schema) {
+                $this->assertNotEmpty($schema['responses']);
+
+                foreach ($schema['responses'] as $code => $response) {
+                    $this->assertIsInt($code);
+                    $this->assertArrayHasKey('description', $response);
+
+                    if ($route === '/users/{id}') {
+                        if ($verb === 'get') {
+                            $this->assertSame([
+                                'description' => 'OK',
+                                'example' => [
+                                    'first_name' => 'string',
+                                ],
+                            ], $response);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**

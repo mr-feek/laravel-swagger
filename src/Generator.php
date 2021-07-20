@@ -10,7 +10,7 @@ use Mtrajano\LaravelSwagger\Definitions\Security\Contracts\SecurityDefinitionsGe
 use Mtrajano\LaravelSwagger\Definitions\Security\SecurityDefinitionsFactory;
 use Mtrajano\LaravelSwagger\Responses\ResponseGenerator;
 use phpDocumentor\Reflection\DocBlockFactory;
-use ReflectionMethod;
+use PHPStan\BetterReflection\BetterReflection;
 
 class Generator
 {
@@ -25,6 +25,10 @@ class Generator
     protected $method;
     protected $docParser;
     protected $hasSecurityDefinitions;
+    /**
+     * @var \Mtrajano\LaravelSwagger\Parsers\ResponseParser
+     */
+    private $responseParser;
 
     /**
      * @var SecurityDefinitionsGenerator|null
@@ -269,7 +273,7 @@ class Generator
     /**
      * @throws \ReflectionException
      */
-    private function getActionClassInstance(): ?ReflectionMethod
+    private function getActionClassInstance(): ?\PHPStan\BetterReflection\Reflection\ReflectionMethod
     {
         [$class, $method] = Str::parseCallback($this->route->getAction());
 
@@ -277,7 +281,10 @@ class Generator
             return null;
         }
 
-        return new ReflectionMethod($class, $method);
+        return (new BetterReflection())
+            ->classReflector()
+            ->reflect($class)
+            ->getMethod($method);
     }
 
     private function parseActionDocBlock(string $docBlock): array
