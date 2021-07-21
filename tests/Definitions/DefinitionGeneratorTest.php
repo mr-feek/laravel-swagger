@@ -130,8 +130,6 @@ class DefinitionGeneratorTest extends TestCase
 
     public function testGenerateDefinitionWhenExistsMethodDocs()
     {
-        $this->markTestSkipped('Fix flaky test');
-
         $route = $this->newRouteByName('products.show');
 
         $this->generateDefinitionsForRoute($route);
@@ -157,7 +155,6 @@ class DefinitionGeneratorTest extends TestCase
 
     public function testGenerateDefinitionWhenExistsControllerDocs()
     {
-        $this->markTestSkipped('Fix flaky test');
 
         $route = $this->newRouteByName('products.store');
 
@@ -192,7 +189,6 @@ class DefinitionGeneratorTest extends TestCase
 
     public function testGenerateDefinitionWithRelations()
     {
-        $this->markTestSkipped('Fix flaky test');
 
         $route = $this->newRouteByName('orders.show');
 
